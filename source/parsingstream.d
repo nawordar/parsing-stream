@@ -188,7 +188,6 @@ struct ParsingStream(T = char) {
             ParsingStream.Checker check = a => a.isAlpha;
 
             // Match whole words
-            // Skip jumps over whitespace
             assert(stream.skip.match(check) == "This");
             assert(stream.skip.match(check) == "is");
             assert(stream.skip.match(check) != "not");

@@ -14,6 +14,7 @@ unittest {
 
     while (stream) {
 
+        // `skip` jumps over whitespace
         auto word = stream.skip.match(a => a.isAlpha);
         assert(words.canFind(word));
 
