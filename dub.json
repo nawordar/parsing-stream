@@ -1,0 +1,23 @@
+{
+	"authors": [
+		"Soaku"
+	],
+	"copyright": "Copyright © 2020, Soaku",
+	"description": "A simple string stream as a helper for building parsers",
+	"license": "BSL-1.0",
+	"name": "parsing-stream",
+	"version": "0.1.0",
+	"targetPath": "bin/",
+	"configurations": [
+		{
+			"name": "main",
+			"targetType": "staticLibrary",
+			"excludedSourceFiles": ["source/test.d"]
+		},
+		{
+			"name": "tests",
+			"targetType": "executable",
+			"dflags": ["-unittest"]
+		}
+	]
+}
