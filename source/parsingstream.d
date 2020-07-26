@@ -8,6 +8,8 @@ debug import std.stdio;
 
 private enum IsChar(T) = is(T == char) || is(T == wchar) || is(T == dchar);
 
+alias StringStream = ParsingStream!char;
+
 /// This class takes a string and lets you perform simple matching operations to help in writing simple parsers
 /// and keep your code readable.
 struct ParsingStream(T = char) {
@@ -20,6 +22,12 @@ struct ParsingStream(T = char) {
 
     /// Current index.
     size_t index;
+
+    /// Current line number.
+    size_t lineNumber = 1;
+
+    /// True if the previous character was a carriage return. Used to ignore following line feeds.
+    protected bool passedCR;
 
     /// Create the stream.
     this(TString subject) {
@@ -54,6 +62,24 @@ struct ParsingStream(T = char) {
             // Check it
             if (check(character)) {
 
+                // Line feed (not CRLF)
+                if (character == '\n' && !passedCR) {
+
+                    lineNumber += 1;
+
+                }
+
+                // Carriage return
+                else if (character == '\r') {
+
+                    lineNumber += 1;
+                    passedCR = true;
+
+                }
+
+                // Other/CRLF — end the break
+                else passedCR = false;
+
                 index += 1;
                 return true;
 
@@ -75,7 +101,7 @@ struct ParsingStream(T = char) {
         static if (is(T == char))
         unittest {
 
-            auto stream = parsingStream("hello");
+            auto stream = StringStream("hello");
             char ch;
             assert( stream.step(a => a == 'h'));  // First character
             assert(!stream.step(a => a == 'l'));  // Second character is an "e", won't match
@@ -112,7 +138,7 @@ struct ParsingStream(T = char) {
         static if (is(T == char))
         unittest {
 
-            auto stream = parsingStream("hello");
+            auto stream = StringStream("hello");
 
             // Matcher for "h" and "e"
             ParsingStream.Checker check = a => a == 'h' || a == 'e';
@@ -142,7 +168,7 @@ struct ParsingStream(T = char) {
         static if (is(T == char))
         unittest {
 
-            auto stream = parsingStream("hi!");
+            auto stream = StringStream("hi!");
             char a, b, c;
             ParsingStream.Checker check = x => x.isAlpha;
 
@@ -186,7 +212,7 @@ struct ParsingStream(T = char) {
         static if (is(T == char))
         unittest {
 
-            auto stream = parsingStream("This is a sentence.");
+            auto stream = StringStream("This is a sentence.");
             ParsingStream.Checker check = a => a.isAlpha;
 
             // Match whole words
@@ -215,7 +241,7 @@ struct ParsingStream(T = char) {
         static if (is(T == char))
         unittest {
 
-            auto stream = parsingStream("This is a sentence");
+            auto stream = StringStream("This is a sentence");
             ParsingStream.Checker check = a => a.isAlpha;
 
 
@@ -246,7 +272,7 @@ struct ParsingStream(T = char) {
         static if (is(T == char))
         unittest {
 
-            auto stream = parsingStream("This is a sentence");
+            auto stream = StringStream("This is a sentence");
             ParsingStream.Checker check = a => a.isAlpha;
             string a, b, c;
 
@@ -282,7 +308,7 @@ struct ParsingStream(T = char) {
         static if (is(T == char))
         unittest {
 
-            auto stream = parsingStream("This is a sentence");
+            auto stream = StringStream("This is a sentence");
 
             assert(stream.skip.matchUntil(ch => ch == ' ') == "This");
             assert(stream.skip.matchUntil(ch => ch == ' ') == "is");
@@ -327,7 +353,7 @@ struct ParsingStream(T = char) {
         /// Skip one character, without matching.
         ref ParsingStream!T skipOne() {
 
-            index += 1;
+            step(_ => true);
             return this;
 
         }
@@ -383,7 +409,7 @@ struct ParsingStream(T = char) {
         static if (is(T == char))
         unittest {
 
-            auto stream = parsingStream("  white  = space(stuff)");
+            auto stream = StringStream("  white  = space(stuff)");
 
             assert(stream.skip().match(a => a.isAlpha) == "white");
 
