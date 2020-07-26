@@ -43,6 +43,36 @@ struct ParsingStream(T = char) {
 
     }
 
+    /// Check if this character ends the line.
+    ///
+    /// Returns: True if the current character is a CR or LF. However, returns false if the current character is an LF
+    /// and the previous one was a CR.
+    bool isEOL() {
+
+        auto character = subject[index];
+
+        // Line feed (not CRLF)
+        if (character == '\n' && !passedCR) {
+
+            return true;
+
+        }
+
+        // Carriage return
+        else if (character == '\r') {
+
+            passedCR = true;
+            return true;
+
+        }
+
+        // Other/CRLF — end the break
+        passedCR = false;
+
+        return false;
+
+    }
+
     // Stepping
     struct {
 
@@ -62,23 +92,8 @@ struct ParsingStream(T = char) {
             // Check it
             if (check(character)) {
 
-                // Line feed (not CRLF)
-                if (character == '\n' && !passedCR) {
-
-                    lineNumber += 1;
-
-                }
-
-                // Carriage return
-                else if (character == '\r') {
-
-                    lineNumber += 1;
-                    passedCR = true;
-
-                }
-
-                // Other/CRLF — end the break
-                else passedCR = false;
+                // Reached end of line, bump the number
+                if (isEOL) lineNumber += 1;
 
                 index += 1;
                 return true;
