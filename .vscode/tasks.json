@@ -4,7 +4,7 @@
 		{
 			"type": "dub",
 			"test": true,
-			"buildType": "debug",
+			"buildType": "unittest",
 			"configuration": "unittest",
 			"problemMatcher": [
 				"$dmd"

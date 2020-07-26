@@ -6,7 +6,7 @@
 	"description": "A simple string stream as a helper for building parsers",
 	"license": "BSL-1.0",
 	"name": "parsing-stream",
-	"version": "0.2",
+	"version": "0.2.0",
 	"targetPath": "bin/",
 	"configurations": [
 		{
@@ -17,7 +17,6 @@
 		{
 			"name": "unittest",
 			"sourcePaths": ["tests"],
-			"buildOptions": ["unittests"],
 			"importPaths": ["tests"]
 		}
 	]
