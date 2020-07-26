@@ -7,7 +7,7 @@ import std.uni;
 import std.algorithm;
 import parsingstream;
 
-auto stream = new parsingStream("a fox jumped over\tthe lazy brown dog");
+auto stream = new ParsingSteram!char("a fox jumped over\tthe lazy brown dog");
 auto words = ["a", "fox", "jumped", "over", "the", "lazy", "brown", "dog"];
 
 while (stream) {
@@ -21,8 +21,7 @@ while (stream) {
 
 ## UTF-16, UTF-32 and binary
 
-You can give a type as an argument to the ParsingStream class to decide the type of the stream — UTF-8 (`char`)
-is the default one.
+You can give a type as an argument to the ParsingStream class to decide the type of the stream.
 
 ```d
 ParsingStream!char;   // UTF-8

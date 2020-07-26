@@ -6,12 +6,42 @@ import std.exception;
 
 debug import std.stdio;
 
+private enum IsChar(T) = is(T == char) || is(T == wchar) || is(T == dchar);
+
 /// This class takes a string and lets you perform simple matching operations to help in writing simple parsers
 /// and keep your code readable.
 struct ParsingStream(T = char) {
 
     alias TString = immutable(T)[];
     alias Checker = bool delegate(T);
+
+    /// Some useful checkers.
+    struct CheckFor {
+
+        /// Match any character.
+        static bool anything(T) {
+
+            return true;
+
+        }
+
+        /// Match using a function from STD
+        static if (IsChar!(T))
+        static bool using(bool function(dchar) func, T ch) {
+
+            return func(ch);
+
+        }
+
+        unittest {
+
+            alias S = ParsingStream!char;
+            auto stream = new S("hello there");
+            assert(stream.match(S.Match.using(isAlpha)) == "hello");
+
+        }
+
+    }
 
     /// String we are operating on.
     TString subject;
@@ -392,6 +422,7 @@ struct ParsingStream(T = char) {
 }
 
 /// ditto
+deprecated("Use StringStream instead.")
 ParsingStream!char parsingStream(string content = "") {
 
     return ParsingStream!char(content);
