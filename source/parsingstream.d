@@ -18,7 +18,7 @@ struct ParsingStream(T = char) {
     alias Checker = bool delegate(T);
 
     /// String we are operating on.
-    TString subject;
+    immutable TString* subject;
 
     /// Current index.
     size_t index;
@@ -32,7 +32,7 @@ struct ParsingStream(T = char) {
     /// Create the stream.
     this(TString subject) {
 
-        this.subject = subject;
+        this.subject = &subject;
 
     }
 
