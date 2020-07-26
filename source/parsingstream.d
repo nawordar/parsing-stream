@@ -15,34 +15,6 @@ struct ParsingStream(T = char) {
     alias TString = immutable(T)[];
     alias Checker = bool delegate(T);
 
-    /// Some useful checkers.
-    struct CheckFor {
-
-        /// Match any character.
-        static bool anything(T) {
-
-            return true;
-
-        }
-
-        /// Match using a function from STD
-        static if (IsChar!(T))
-        static bool using(bool function(dchar) func, T ch) {
-
-            return func(ch);
-
-        }
-
-        unittest {
-
-            alias S = ParsingStream!char;
-            auto stream = new S("hello there");
-            assert(stream.match(S.Match.using(isAlpha)) == "hello");
-
-        }
-
-    }
-
     /// String we are operating on.
     TString subject;
 
