@@ -7,7 +7,7 @@ import std.uni;
 import std.algorithm;
 import parsingstream;
 
-auto stream = new ParsingSteram!char("a fox jumped over\tthe lazy brown dog");
+auto stream = new ParsingStream!char("a fox jumped over\tthe lazy brown dog");
 auto words = ["a", "fox", "jumped", "over", "the", "lazy", "brown", "dog"];
 
 while (stream) {
